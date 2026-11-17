@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Movie {
+  id        Int      @id @default(autoincrement())
+  title     String
+  year      Int?
+  posterUrl String?
+  rating    Int?
+  watched   Boolean  @default(false)
+  genreId   Int?
+  genre     Genre?   @relation(fields: [genreId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Genre {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  movies Movie[]
+}
