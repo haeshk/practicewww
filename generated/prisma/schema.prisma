@@ -8,19 +8,38 @@ datasource db {
 }
 
 model Movie {
-  id        Int      @id @default(autoincrement())
-  title     String
-  year      Int?
-  posterUrl String?
-  rating    Int?
-  watched   Boolean  @default(false)
-  genreId   Int?
-  genre     Genre?   @relation(fields: [genreId], references: [id])
-  createdAt DateTime @default(now())
+  id           Int         @id @default(autoincrement())
+  title        String
+  year         Int?
+  rating       Int?
+  watched      Boolean     @default(false)
+  posterUrl    String?
+  genreId      Int?
+  genre        Genre?      @relation(fields: [genreId], references: [id])
+  collectionId Int?
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  createdAt    DateTime    @default(now())
 }
 
 model Genre {
   id     Int     @id @default(autoincrement())
   name   String  @unique
   movies Movie[]
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  passwordHash String
+  collections  Collection[]
+  createdAt    DateTime     @default(now())
+}
+
+model Collection {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  movies    Movie[]
+  createdAt DateTime @default(now())
 }
