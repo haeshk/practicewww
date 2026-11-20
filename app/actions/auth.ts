@@ -12,6 +12,7 @@ const prisma = new PrismaClient({ adapter })
 
 const JWT_SECRET = new TextEncoder().encode('super-secret-key-for-study')
 
+// 1. Вход
 export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -37,15 +38,17 @@ export async function login(formData: FormData) {
     path: '/',
   })
 
-  redirect('/') // После входа кидаем на главную
+  redirect('/')
 }
 
+// 2. Выход
 export async function logout() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
   redirect('/login')
 }
 
+// 3. Создание коллекции
 export async function createCollection(formData: FormData) {
   const name = formData.get('name') as string
   const cookieStore = await cookies()
@@ -68,5 +71,76 @@ export async function createCollection(formData: FormData) {
     return { success: true }
   } catch (error) {
     return { error: 'Ошибка при создании коллекции' }
+  }
+}
+
+// 4. Удаление коллекции
+export async function deleteCollection(id: number) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('session')?.value
+  if (!token) return { error: 'Нет доступа' }
+
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    const userId = payload.userId as number
+
+    await prisma.collection.delete({
+      where: { id, userId },
+    })
+    revalidatePath('/my-collection')
+    return { success: true }
+  } catch (error) {
+    return { error: 'Ошибка при удалении' }
+  }
+}
+
+// 5. Переименование коллекции
+export async function renameCollection(id: number, newName: string) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('session')?.value
+  if (!token) return { error: 'Нет доступа' }
+
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    const userId = payload.userId as number
+
+    await prisma.collection.update({
+      where: { id, userId },
+      data: { name: newName },
+    })
+    revalidatePath('/my-collection')
+    return { success: true }
+  } catch (error) {
+    return { error: 'Ошибка при переименовании' }
+  }
+}
+
+// 6. Добавление фильмов в коллекцию
+export async function addMoviesToCollection(collectionId: number, movieIds: number[]) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('session')?.value
+  if (!token) return { error: 'Нет доступа' }
+
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    const userId = payload.userId as number
+
+    // Проверяем, принадлежит ли коллекция пользователю
+    const collection = await prisma.collection.findUnique({
+      where: { id: collectionId, userId }
+    })
+    
+    if (!collection) return { error: 'Коллекция не найдена' }
+
+    // Привязываем фильмы к коллекции
+    await prisma.movie.updateMany({
+      where: { id: { in: movieIds } },
+      data: { collectionId: collectionId }
+    })
+
+    revalidatePath(`/my-collection/${collectionId}`)
+    return { success: true }
+  } catch (error) {
+    return { error: 'Ошибка при добавлении фильмов' }
   }
 }
