@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import MoviePickerModal from '../../components/MoviePickerModal'
+import { removeMovieFromCollection } from '../../actions/auth'
 
 export default function CollectionPage() {
   const params = useParams()
@@ -14,7 +15,6 @@ export default function CollectionPage() {
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-    // Загружаем данные через API (создадим его на следующем шаге)
     const loadData = async () => {
       const res = await fetch(`/api/collection/${collectionId}`)
       if (res.ok) {
@@ -59,12 +59,24 @@ export default function CollectionPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {collection.movies.map((movie: any) => (
-            <div key={movie.id} className="border border-gray-700 p-4 rounded-lg bg-gray-800 text-white flex flex-col shadow-lg">
+            <div key={movie.id} className="relative border border-gray-700 p-4 rounded-lg bg-gray-800 text-white flex flex-col shadow-lg">
               {movie.posterUrl ? (
                 <img src={movie.posterUrl} alt={movie.title} className="w-full h-64 object-cover rounded-md mb-4" />
               ) : (
                 <div className="w-full h-64 bg-gray-700 flex items-center justify-center rounded-md mb-4 text-gray-400">Нет постера</div>
               )}
+              <button 
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if(confirm('Удалить из коллекции?')) {
+                    await removeMovieFromCollection(movie.id);
+                    window.location.reload();
+                  }
+                }}
+                className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full text-xs"
+              >
+                ✕
+              </button>
               <h3 className="text-xl font-semibold mb-2">{movie.title} ({movie.year})</h3>
               <p className="text-gray-400 text-sm mb-1">Жанр: {movie.genre?.name || 'Не указан'}</p>
               <p className="text-gray-400 text-sm mb-3">Рейтинг: {movie.rating} / 10</p>
@@ -74,7 +86,6 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* Вызов модального окна */}
       {showModal && (
         <MoviePickerModal 
           collectionId={collectionId} 

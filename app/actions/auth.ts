@@ -12,14 +12,12 @@ const prisma = new PrismaClient({ adapter })
 
 const JWT_SECRET = new TextEncoder().encode('super-secret-key-for-study')
 
-// 1. Вход
+// Вход
 export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-  })
+  const user = await prisma.user.findUnique({ where: { email } })
 
   if (!user || user.passwordHash !== password) {
     return { error: 'Неверный email или пароль' }
@@ -41,32 +39,24 @@ export async function login(formData: FormData) {
   redirect('/')
 }
 
-// 2. Выход
+// Выход
 export async function logout() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
   redirect('/login')
 }
 
-// 3. Создание коллекции
+//  Создание коллекции
 export async function createCollection(formData: FormData) {
   const name = formData.get('name') as string
   const cookieStore = await cookies()
   const token = cookieStore.get('session')?.value
-
   if (!token) return { error: 'Вы не авторизованы' }
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
     const userId = payload.userId as number
-
-    await prisma.collection.create({
-      data: {
-        name: name,
-        userId: userId,
-      },
-    })
-    
+    await prisma.collection.create({ data: { name, userId } })
     revalidatePath('/my-collection')
     return { success: true }
   } catch (error) {
@@ -74,7 +64,7 @@ export async function createCollection(formData: FormData) {
   }
 }
 
-// 4. Удаление коллекции
+// Удаление коллекции
 export async function deleteCollection(id: number) {
   const cookieStore = await cookies()
   const token = cookieStore.get('session')?.value
@@ -83,10 +73,7 @@ export async function deleteCollection(id: number) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
     const userId = payload.userId as number
-
-    await prisma.collection.delete({
-      where: { id, userId },
-    })
+    await prisma.collection.delete({ where: { id, userId } })
     revalidatePath('/my-collection')
     return { success: true }
   } catch (error) {
@@ -94,7 +81,7 @@ export async function deleteCollection(id: number) {
   }
 }
 
-// 5. Переименование коллекции
+// Переименование коллекции
 export async function renameCollection(id: number, newName: string) {
   const cookieStore = await cookies()
   const token = cookieStore.get('session')?.value
@@ -103,11 +90,7 @@ export async function renameCollection(id: number, newName: string) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
     const userId = payload.userId as number
-
-    await prisma.collection.update({
-      where: { id, userId },
-      data: { name: newName },
-    })
+    await prisma.collection.update({ where: { id, userId }, data: { name: newName } })
     revalidatePath('/my-collection')
     return { success: true }
   } catch (error) {
@@ -115,7 +98,7 @@ export async function renameCollection(id: number, newName: string) {
   }
 }
 
-// 6. Добавление фильмов в коллекцию
+//  Добавление фильмов в коллекцию
 export async function addMoviesToCollection(collectionId: number, movieIds: number[]) {
   const cookieStore = await cookies()
   const token = cookieStore.get('session')?.value
@@ -125,22 +108,49 @@ export async function addMoviesToCollection(collectionId: number, movieIds: numb
     const { payload } = await jwtVerify(token, JWT_SECRET)
     const userId = payload.userId as number
 
-    // Проверяем, принадлежит ли коллекция пользователю
-    const collection = await prisma.collection.findUnique({
-      where: { id: collectionId, userId }
-    })
-    
+    const collection = await prisma.collection.findUnique({ where: { id: collectionId, userId } })
     if (!collection) return { error: 'Коллекция не найдена' }
 
-    // Привязываем фильмы к коллекции
     await prisma.movie.updateMany({
       where: { id: { in: movieIds } },
       data: { collectionId: collectionId }
     })
-
     revalidatePath(`/my-collection/${collectionId}`)
     return { success: true }
   } catch (error) {
     return { error: 'Ошибка при добавлении фильмов' }
+  }
+}
+
+//  Добавление НОВОГО фильма в базу
+export async function addNewMovie(formData: FormData) {
+  const title = formData.get('title') as string
+  const year = parseInt(formData.get('year') as string)
+  const rating = parseInt(formData.get('rating') as string)
+  const genreId = parseInt(formData.get('genreId') as string)
+  const posterUrl = formData.get('posterUrl') as string
+
+  try {
+    await prisma.movie.create({
+      data: { title, year, rating, genreId, posterUrl: posterUrl || null, watched: false },
+    })
+    revalidatePath('/')
+    return { success: true }
+  } catch (error) {
+    return { error: 'Ошибка при добавлении фильма' }
+  }
+}
+
+// Удаление фильма ИЗ КОЛЛЕКЦИИ
+export async function removeMovieFromCollection(movieId: number) {
+  try {
+    await prisma.movie.update({
+      where: { id: movieId },
+      data: { collectionId: null }
+    })
+    revalidatePath('/')
+    return { success: true }
+  } catch (error) {
+    return { error: 'Ошибка при удалении фильма' }
   }
 }
