@@ -10,23 +10,23 @@
 - SQLite (база данных)
 - JWT + Cookies (авторизация)
 
-## 🛠 Запуск проекта
+## Запуск проекта
 
 1. Установите зависимости:
    ```bash
    npm install
 
 2. Примените миграции базы данных и сгенерируйте Prisma Client:
-    bash
+    ```bash
     npx prisma db push
     npx prisma generate
 
 3. Наполните базу тестовыми данными (фильмы, жанры, тестовый пользователь):
-    bash
+    ```bash
     npm run db:seed
 
 4. Запустите сервер разработки:
-    bash
+    ```bash
     npm run dev
 
 5. Откройте http://localhost:3000 в браузере.
