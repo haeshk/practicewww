@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# База фильмов (Movie Collection)
 
-## Getting Started
+Учебный проект по практике. Веб-приложение для создания личной коллекции фильмов.
 
-First, run the development server:
+## Технологии
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS (стилизация)
+- Prisma ORM
+- SQLite (база данных)
+- JWT + Cookies (авторизация)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠 Запуск проекта
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Установите зависимости:
+   ```bash
+   npm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Примените миграции базы данных и сгенерируйте Prisma Client:
+    bash
+    npx prisma db push
+    npx prisma generate
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Наполните базу тестовыми данными (фильмы, жанры, тестовый пользователь):
+    bash
+    npm run db:seed
 
-## Learn More
+4. Запустите сервер разработки:
+    bash
+    npm run dev
 
-To learn more about Next.js, take a look at the following resources:
+5. Откройте http://localhost:3000 в браузере.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   # Тестовый аккаунт для входа
+    Email: test@test.com
+    Пароль: 123456
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    ## Функционал
+1. Просмотр общей базы фильмов.
+2. Регистрация и авторизация (вход/выход).
+3. Создание личных коллекций (папок).
+4. Поиск фильмов и добавление их в свои коллекции.
+5. Добавление новых фильмов в общую базу.
+6. Удаление фильмов из коллекций.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
