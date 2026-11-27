@@ -21,28 +21,32 @@
     npm install prisma@7 --save-dev
     npm install
 
-2.1. Проверяем ветку.
+3. Проверяем ветку.
     ```bash
     git checkout develop
     git reset --hard
 
-2.2. 
+4. 
     ```bash
     install @prisma/adapter-better-sqlite3 better-sqlite3
 
-2.3. 
+5. .env
+    ```bash
+    DATABASE_URL="file:./dev.db"
+
+5. 
     ```bash
     npx prisma@7 db push
 
-3. Наполните базу тестовыми данными (фильмы, жанры, тестовый пользователь):
+6. Наполните базу тестовыми данными (фильмы, жанры, тестовый пользователь):
     ```bash
     npm run db:seed
 
-4. Запустите сервер разработки:
+7. Запустите сервер разработки:
     ```bash
     npm run dev
 
-5. Откройте http://localhost:3000 в браузере.
+8. Откройте http://localhost:3000 в браузере.
 
    # Тестовый аккаунт для входа
     Email: test@test.com
