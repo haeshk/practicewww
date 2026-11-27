@@ -12,14 +12,27 @@
 
 ## Запуск проекта
 
-1. Установите зависимости:
+1. Клонируем:
    ```bash
-   npm install
+   git clone -b develop https://github.com/haeshk/practicewww.git .
 
 2. Примените миграции базы данных и сгенерируйте Prisma Client:
     ```bash
-    npx prisma db push
-    npx prisma generate
+    npm install prisma@7 --save-dev
+    npm install
+
+2.1. Проверяем ветку.
+    ```bash
+    git checkout develop
+    git reset --hard
+
+2.2. 
+    ```bash
+    install @prisma/adapter-better-sqlite3 better-sqlite3
+
+2.3. 
+    ```bash
+    npx prisma@7 db push
 
 3. Наполните базу тестовыми данными (фильмы, жанры, тестовый пользователь):
     ```bash
