@@ -15,7 +15,6 @@ export default async function Header() {
           Вояж
         </Link>
 
-        {/* Навигация по центру */}
         <nav className="flex gap-6">
           <Link href="/" className="hover:text-blue-400 transition-colors">
             Общая коллекция
@@ -25,7 +24,6 @@ export default async function Header() {
           </Link>
         </nav>
 
-        {/* Кнопка входа/выхода справа */}
         <div>
           {isLoggedIn ? (
             <form action={logout}>

@@ -16,7 +16,6 @@ export default function MoviePickerModal({
   const [selectedIds, setSelectedIds] = useState<number[]>([])
   const [loading, setLoading] = useState(false)
 
-  // Фильтруем фильмы по поиску
   const filteredMovies = allMovies.filter(m => 
     m.title.toLowerCase().includes(search.toLowerCase())
   )
@@ -46,13 +45,13 @@ export default function MoviePickerModal({
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
       <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-gray-700">
         
-        {/* Шапка модалки */}
+        
         <div className="p-6 border-b border-gray-700 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-white">Выберите фильмы</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
         </div>
 
-        {/* Поиск */}
+       
         <div className="p-4 border-b border-gray-700">
           <input 
             type="text" 
@@ -63,7 +62,7 @@ export default function MoviePickerModal({
           />
         </div>
 
-        {/* Сетка фильмов */}
+        
         <div className="p-6 overflow-y-auto flex-grow">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {filteredMovies.map(movie => {
@@ -76,7 +75,7 @@ export default function MoviePickerModal({
                     isSelected ? 'border-blue-500 bg-gray-700' : 'border-transparent bg-gray-800 hover:bg-gray-700'
                   }`}
                 >
-                  {/* Галочка выбора */}
+
                   {isSelected && (
                     <div className="absolute top-2 right-2 bg-blue-500 rounded-full p-1 z-10">
                       <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,7 +100,6 @@ export default function MoviePickerModal({
           )}
         </div>
 
-        {/* Подвал модалки */}
         <div className="p-4 border-t border-gray-700 flex justify-between items-center bg-gray-800">
           <p className="text-gray-400">Выбрано: {selectedIds.length}</p>
           <div className="flex gap-4">

@@ -90,13 +90,13 @@ export default function MyCollectionPage() {
           {collections.map((col) => (
             <div key={col.id} className="relative bg-gray-800 rounded-lg shadow-lg border border-gray-700 hover:bg-gray-700 transition-colors h-40 flex flex-col items-center justify-center">
               
-              {/* Сама карточка (ссылка на будущую страницу коллекции) */}
+              
               <Link href={`/my-collection/${col.id}`} className="flex flex-col items-center justify-center w-full h-full">
                 <span className="text-4xl mb-2">📂</span>
                 <h3 className="text-xl font-semibold text-white text-center px-4">{col.name}</h3>
               </Link>
 
-              {/* Кнопка с тремя точками */}
+
               <div className="absolute top-2 right-2">
                 <button 
                   onClick={(e) => {
@@ -112,7 +112,7 @@ export default function MyCollectionPage() {
                 </button>
               </div>
 
-              {/* Выпадающее меню */}
+
               {showMenuId === col.id && (
                 <div className="absolute top-10 right-2 bg-gray-900 border border-gray-600 rounded-md shadow-xl z-10 w-40 overflow-hidden">
                   <button 
@@ -144,7 +144,7 @@ export default function MyCollectionPage() {
         </div>
       )}
 
-      {/* Модалка создания (как была) */}
+
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowCreateModal(false)}>
           <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md border border-gray-700" onClick={e => e.stopPropagation()}>
@@ -172,7 +172,7 @@ export default function MyCollectionPage() {
         </div>
       )}
 
-      {/* Модалка переименования */}
+
       {showRenameModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowRenameModal(null)}>
           <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md border border-gray-700" onClick={e => e.stopPropagation()}>

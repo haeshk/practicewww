@@ -5,7 +5,7 @@ const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' })
 const prisma = new PrismaClient({ adapter })
 
 async function main() {
-  // 1. Создаем тестового пользователя
+  // Создаем тестового пользователя
   const user = await prisma.user.upsert({
     where: { email: 'test@test.com' },
     update: {},
@@ -15,7 +15,7 @@ async function main() {
     },
   })
 
-  // 2. Создаем первую коллекцию для этого пользователя
+  // Создаем первую коллекцию для этого пользователя
   const collection = await prisma.collection.create({
     data: {
       name: 'Моя коллекция',
@@ -23,7 +23,7 @@ async function main() {
     },
   })
 
-  // 3. Создаем жанры
+  // Создаем жанры
   const dystopia = await prisma.genre.upsert({
     where: { name: 'Антиутопия' },
     update: {},
@@ -40,7 +40,7 @@ async function main() {
     create: { name: 'Фантастика' },
   })
 
-  // 4. Создаем фильмы и сразу привязываем их к коллекции
+  // Создаем фильмы и сразу привязываем их к коллекции
   await prisma.movie.createMany({
     data: [
       { title: 'Матрица', year: 1999, rating: 9, watched: true, genreId: dystopia.id, posterUrl: '/posters/matrix.jpg', collectionId: collection.id },
